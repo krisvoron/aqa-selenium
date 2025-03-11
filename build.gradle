@@ -1,0 +1,34 @@
+plugins {
+    id 'java'
+    id 'io.qameta.allure' version '2.12.0'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    junitVersion = '5.11.4'
+    allureVersion = '2.29.1'
+    seleniumVersion = '4.29.0'
+}
+
+dependencies {
+    testImplementation platform("org.junit:junit-bom:${junitVersion}")
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation "io.qameta.allure:allure-junit5:${allureVersion}"
+    implementation "org.seleniumhq.selenium:selenium-java:${seleniumVersion}"
+}
+
+
+test {
+    useJUnitPlatform{
+        systemProperty 'allure.results.directory', 'build/allure-results'
+    }
+    maxParallelForks = Runtime.runtime.availableProcessors()
+    systemProperty "junit.jupiter.execution.parallel.enabled", "true"
+    systemProperty "junit.jupiter.execution.parallel.mode.default", "concurrent"
+}
