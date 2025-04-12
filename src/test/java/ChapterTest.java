@@ -11,11 +11,11 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import java.util.stream.Stream;
 
+import static data.Constants.BASE_PAGE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ChapterTest {
     WebDriver webDriver;
-    private static final String BASE_PAGE = "https://bonigarcia.dev/selenium-webdriver-java/";
     private static final String chaptersXPath = "//div[@class='card-body']";
     private static final String titleXPath = "//h1[contains(@class, 'display-6')]";
 
