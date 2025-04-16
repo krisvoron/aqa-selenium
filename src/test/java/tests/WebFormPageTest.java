@@ -1,4 +1,5 @@
-import org.junit.jupiter.api.AfterEach;
+package tests;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -8,9 +9,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.ui.Select;
@@ -23,8 +22,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static data.Constants.BASE_PAGE;
-import static data.Constants.HOME_PAGE;
+import static constants.Constants.BASE_PAGE;
+import static constants.Constants.HOME_PAGE;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -32,8 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class WebFormPageTest {
-    WebDriver webDriver;
+public class WebFormPageTest extends BaseTest{
     Actions actions;
     JavascriptExecutor js;
     private static final String WEB_FORM_PAGE = BASE_PAGE + "web-form.html";
@@ -64,21 +62,14 @@ public class WebFormPageTest {
 
     @BeforeEach
     void setup() {
-        webDriver = new ChromeDriver();
-        webDriver.get(WEB_FORM_PAGE);
-        webDriver.manage().window().maximize();
-        actions = new Actions(webDriver);
-        js = (JavascriptExecutor) webDriver;
-    }
-
-    @AfterEach
-    void end() {
-        webDriver.quit();
+        driver.get(WEB_FORM_PAGE);
+        actions = new Actions(driver);
+        js = (JavascriptExecutor) driver;
     }
 
     @Test
     void setValueInTextInputTest() {
-        WebElement textInputField = webDriver.findElement(By.id("my-text-id"));
+        WebElement textInputField = driver.findElement(By.id("my-text-id"));
         WebElement textInputTitle = textInputField.findElement(By.xpath(FIELD_NAME_PATH));
         textInputField.sendKeys(SIMPLE_TEXT);
         assertAll(
@@ -89,7 +80,7 @@ public class WebFormPageTest {
 
     @Test
     void clearTextInputTest() {
-        WebElement textInputField = webDriver.findElement(By.id("my-text-id"));
+        WebElement textInputField = driver.findElement(By.id("my-text-id"));
         textInputField.sendKeys(SIMPLE_TEXT);
         textInputField.clear();
         assertEquals(EMPTY_FIELD, textInputField.getDomProperty(VALUE), FIELD_NOT_EMPTY_ERROR_MESSAGE);
@@ -97,7 +88,7 @@ public class WebFormPageTest {
 
     @Test
     void setValueInPasswordInputTest() {
-        WebElement pswInputField = webDriver.findElement(By.name("my-password"));
+        WebElement pswInputField = driver.findElement(By.name("my-password"));
         WebElement pswInputTitle = pswInputField.findElement(By.xpath(FIELD_NAME_PATH));
         pswInputField.sendKeys(SIMPLE_TEXT);
         assertAll(
@@ -108,7 +99,7 @@ public class WebFormPageTest {
 
     @Test
     void clearPasswordInputTest() {
-        WebElement pswInputField = webDriver.findElement(By.name("my-password"));
+        WebElement pswInputField = driver.findElement(By.name("my-password"));
         pswInputField.sendKeys(SIMPLE_TEXT);
         pswInputField.clear();
         assertEquals(EMPTY_FIELD, pswInputField.getDomProperty(VALUE), FIELD_NOT_EMPTY_ERROR_MESSAGE);
@@ -117,7 +108,7 @@ public class WebFormPageTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("textAreaTestData")
     void setValueInTextAreaInputTest(String description, String textValue, Boolean scrollIsEnabled) {
-        WebElement textAreaInputField = webDriver.findElement(By.name("my-textarea"));
+        WebElement textAreaInputField = driver.findElement(By.name("my-textarea"));
         WebElement textAreaInputTitle = textAreaInputField.findElement(By.xpath(FIELD_NAME_PATH));
         textAreaInputField.sendKeys(textValue);
         assertAll(
@@ -132,7 +123,7 @@ public class WebFormPageTest {
 
     @Test
     void clearTextAreaInputTest() {
-        WebElement textAreaInputField = webDriver.findElement(By.name("my-textarea"));
+        WebElement textAreaInputField = driver.findElement(By.name("my-textarea"));
         textAreaInputField.sendKeys("wfefefe\nefefe\ntdwfwfw\nt");
         textAreaInputField.clear();
         assertAll(
@@ -145,7 +136,7 @@ public class WebFormPageTest {
 
     @Test
     void disabledInputTest() {
-        WebElement disabledInputField = webDriver.findElement(By.name("my-disabled"));
+        WebElement disabledInputField = driver.findElement(By.name("my-disabled"));
         WebElement disabledInputTitle = disabledInputField.findElement(By.xpath(FIELD_NAME_PATH));
         assertAll(
                 () -> assertEquals("Disabled input", disabledInputTitle.getText(), TITLE_ERROR_MESSAGE),
@@ -157,7 +148,7 @@ public class WebFormPageTest {
 
     @Test
     void readonlyInputTest() {
-        WebElement readonlyInputField = webDriver.findElement(By.name("my-readonly"));
+        WebElement readonlyInputField = driver.findElement(By.name("my-readonly"));
         WebElement readonlyInputTitle = readonlyInputField.findElement(By.xpath(FIELD_NAME_PATH));
         readonlyInputField.sendKeys(SIMPLE_TEXT);
         assertAll(
@@ -170,14 +161,14 @@ public class WebFormPageTest {
 
     @Test
     void returnToIndexTest() {
-        WebElement returnToIndexLink = webDriver.findElement(By.linkText("Return to index"));
+        WebElement returnToIndexLink = driver.findElement(By.linkText("Return to index"));
         returnToIndexLink.click();
-        assertEquals(HOME_PAGE, webDriver.getCurrentUrl(), URL_ERROR_MESSAGE);
+        assertEquals(HOME_PAGE, driver.getCurrentUrl(), URL_ERROR_MESSAGE);
     }
 
     @Test
     void dropdownSelectDefaultViewTest() {
-        WebElement dropdownSelectField = webDriver.findElement(By.name("my-select"));
+        WebElement dropdownSelectField = driver.findElement(By.name("my-select"));
         WebElement dropdownSelectInputTitle = dropdownSelectField.findElement(By.xpath(FIELD_NAME_PATH));
         Select select = new Select(dropdownSelectField);
         WebElement selectedOption = select.getFirstSelectedOption();
@@ -201,7 +192,7 @@ public class WebFormPageTest {
 
     @Test
     void dropdownSelectTest() {
-        WebElement dropdownSelectField = webDriver.findElement(By.name("my-select"));
+        WebElement dropdownSelectField = driver.findElement(By.name("my-select"));
         Select select = new Select(dropdownSelectField);
         List<WebElement> optionList = select.getOptions();
         for (int i = 0; i< optionList.size(); i++) {
@@ -212,7 +203,7 @@ public class WebFormPageTest {
 
     @Test
     void dropdownDataListDefaultViewTest() {
-        WebElement dropdownDataListInput = webDriver.findElement(By.name("my-datalist"));
+        WebElement dropdownDataListInput = driver.findElement(By.name("my-datalist"));
         WebElement dropdownDataListInputTitle = dropdownDataListInput.findElement(By.xpath(FIELD_NAME_PATH));
         List<WebElement> optionList = dropdownDataListInput.findElements(By.xpath("//following-sibling::datalist/option"));
         List<String> expectedOptionList = List.of("San Francisco", "New York", "Seattle", "Los Angeles", "Chicago");
@@ -240,7 +231,7 @@ public class WebFormPageTest {
             "AGO, Chicago"
     })
     void dropdownDataListTest(String inputValue, String fieldValue) {
-        WebElement dropdownDataListInput = webDriver.findElement(By.name("my-datalist"));
+        WebElement dropdownDataListInput = driver.findElement(By.name("my-datalist"));
         dropdownDataListInput.sendKeys(inputValue);
         js.executeScript("arguments[0].value = '" + fieldValue +
                 "'; arguments[0].dispatchEvent(new Event('change'));", dropdownDataListInput);
@@ -249,7 +240,7 @@ public class WebFormPageTest {
 
     @Test
     void dropdownDataListClearTest() {
-        WebElement dropdownDataListInput = webDriver.findElement(By.name("my-datalist"));
+        WebElement dropdownDataListInput = driver.findElement(By.name("my-datalist"));
         var inputValue = "San F";
         var fieldValue = "San Francisco";
         dropdownDataListInput.sendKeys(inputValue);
@@ -261,7 +252,7 @@ public class WebFormPageTest {
 
     @Test
     void fileInputDefaultViewTest() {
-        WebElement fileInputField = webDriver.findElement(By.name("my-file"));
+        WebElement fileInputField = driver.findElement(By.name("my-file"));
         WebElement fileInputTitle = fileInputField.findElement(By.xpath(FIELD_NAME_PATH));
         assertAll(
                 () -> assertEquals("File input", fileInputTitle.getText(), TITLE_ERROR_MESSAGE),
@@ -272,8 +263,8 @@ public class WebFormPageTest {
 
     @Test
     void setFileInFileInputTest() {
-        WebElement fileInputField = webDriver.findElement(By.name("my-file"));
-        WebElement submitButton = webDriver.findElement(By.xpath("//button[@type='submit']"));
+        WebElement fileInputField = driver.findElement(By.name("my-file"));
+        WebElement submitButton = driver.findElement(By.xpath("//button[@type='submit']"));
         URL url = WebFormPageTest.class.getClassLoader().getResource(FILE_NAME);
         File file = new File(url.getPath());
         fileInputField.sendKeys(file.getAbsolutePath());
@@ -281,16 +272,16 @@ public class WebFormPageTest {
         submitButton.submit();
         assertAll(
                 () -> assertTrue(value, UNEXPECTED_VALUE_ERROR_MESSAGE),
-                () -> assertTrue(webDriver.getCurrentUrl().startsWith(SUBMIT_FORM), URL_ERROR_MESSAGE),
-                () -> assertTrue(webDriver.getCurrentUrl().contains("my-file=" + FILE_NAME), URL_ERROR_MESSAGE),
-                () -> assertNotNull(webDriver.findElement(By.xpath("//h1[text()='Form submitted']")),
+                () -> assertTrue(driver.getCurrentUrl().startsWith(SUBMIT_FORM), URL_ERROR_MESSAGE),
+                () -> assertTrue(driver.getCurrentUrl().contains("my-file=" + FILE_NAME), URL_ERROR_MESSAGE),
+                () -> assertNotNull(driver.findElement(By.xpath("//h1[text()='Form submitted']")),
                         ELEMENT_SHOWN_ERROR_MESSAGE)
         );
     }
 
     @Test
     void uncheckCheckboxTest() {
-        WebElement checkbox = webDriver.findElement(By.id("my-check-1"));
+        WebElement checkbox = driver.findElement(By.id("my-check-1"));
         WebElement checkboxTitle = checkbox.findElement(By.xpath(FIELD_NAME_PATH));
         boolean defaultCheckboxState = checkbox.isSelected();
         checkbox.click();
@@ -304,7 +295,7 @@ public class WebFormPageTest {
 
     @Test
     void checkCheckboxTest() {
-        WebElement checkbox = webDriver.findElement(By.id("my-check-1"));
+        WebElement checkbox = driver.findElement(By.id("my-check-1"));
         checkbox.click();
         checkbox.click();
         assertAll(
@@ -314,7 +305,7 @@ public class WebFormPageTest {
 
     @Test
     void checkDefaultCheckboxTest() {
-        WebElement checkbox = webDriver.findElement(By.id("my-check-2"));
+        WebElement checkbox = driver.findElement(By.id("my-check-2"));
         WebElement checkboxTitle = checkbox.findElement(By.xpath(FIELD_NAME_PATH));
         boolean defaultCheckboxState = checkbox.isSelected();
         checkbox.click();
@@ -327,7 +318,7 @@ public class WebFormPageTest {
 
     @Test
     void uncheckDefaultCheckboxTest() {
-        WebElement checkbox = webDriver.findElement(By.id("my-check-2"));
+        WebElement checkbox = driver.findElement(By.id("my-check-2"));
         checkbox.click();
         checkbox.click();
         assertAll(
@@ -337,8 +328,8 @@ public class WebFormPageTest {
 
     @Test
     void chooseDefaultRatioTest() {
-        WebElement checkedRatio = webDriver.findElement(By.id("my-radio-1"));
-        WebElement defaultRatio = webDriver.findElement(By.id("my-radio-2"));
+        WebElement checkedRatio = driver.findElement(By.id("my-radio-1"));
+        WebElement defaultRatio = driver.findElement(By.id("my-radio-2"));
         WebElement checkedRatioTitle = checkedRatio.findElement(By.xpath(FIELD_NAME_PATH));
         WebElement defaultRatioTitle = defaultRatio.findElement(By.xpath(FIELD_NAME_PATH));
         boolean checkedRatioState = checkedRatio.isSelected();
@@ -356,8 +347,8 @@ public class WebFormPageTest {
 
     @Test
     void chooseCheckedRatioTest() {
-        WebElement checkedRatio = webDriver.findElement(By.id("my-radio-1"));
-        WebElement defaultRatio = webDriver.findElement(By.id("my-radio-2"));
+        WebElement checkedRatio = driver.findElement(By.id("my-radio-1"));
+        WebElement defaultRatio = driver.findElement(By.id("my-radio-2"));
         defaultRatio.click();
         checkedRatio.click();
         assertAll(
@@ -369,7 +360,7 @@ public class WebFormPageTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("colorTestData")
     void changeColorInColorPickerTest(String description, Color color, String hex) {
-        WebElement colorPickerInput = webDriver.findElement(By.name("my-colors"));
+        WebElement colorPickerInput = driver.findElement(By.name("my-colors"));
         WebElement colorPickerTitle = colorPickerInput.findElement(By.xpath(FIELD_NAME_PATH));
         String actualDefaultColor = colorPickerInput.getDomAttribute(VALUE);
         String defaultColor = "#563d7c";
@@ -389,7 +380,7 @@ public class WebFormPageTest {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
         String expectedDate = LocalDate.now().format(formatter);
 
-        WebElement datePickerInput = webDriver.findElement(By.name("my-date"));
+        WebElement datePickerInput = driver.findElement(By.name("my-date"));
         WebElement datePickerTitle = datePickerInput.findElement(By.xpath(FIELD_NAME_PATH));
         String getDefaultDatePickerValue = datePickerInput.getDomAttribute(VALUE);
         datePickerInput.click();
@@ -405,7 +396,7 @@ public class WebFormPageTest {
 
     @Test
     void defaultExampleRangeViewTest() {
-        WebElement rangeInput = webDriver.findElement(By.name("my-range"));
+        WebElement rangeInput = driver.findElement(By.name("my-range"));
         WebElement rangeTitle = rangeInput.findElement(By.xpath(FIELD_NAME_PATH));
         assertAll(
                 () -> assertEquals("Example range", rangeTitle.getText(), TITLE_ERROR_MESSAGE),
@@ -416,21 +407,21 @@ public class WebFormPageTest {
 
     @Test
     void changeValueByKeyArrowRightInExampleRangeTest() {
-        WebElement rangeInput = webDriver.findElement(By.name("my-range"));
+        WebElement rangeInput = driver.findElement(By.name("my-range"));
         actions.moveToElement(rangeInput).click().sendKeys(Keys.ARROW_RIGHT).perform();
         assertEquals("6", rangeInput.getDomProperty(VALUE), UNEXPECTED_VALUE_ERROR_MESSAGE);
     }
 
     @Test
     void changeValueByKeyArrowLeftInExampleRangeTest() {
-        WebElement rangeInput = webDriver.findElement(By.name("my-range"));
+        WebElement rangeInput = driver.findElement(By.name("my-range"));
         actions.moveToElement(rangeInput).click().sendKeys(Keys.ARROW_LEFT).perform();
         assertEquals("4", rangeInput.getDomProperty(VALUE), UNEXPECTED_VALUE_ERROR_MESSAGE);
     }
 
     @Test
     void changeValueByMouseInExampleRangeTest() {
-        WebElement rangeInput = webDriver.findElement(By.name("my-range"));
+        WebElement rangeInput = driver.findElement(By.name("my-range"));
         int width = rangeInput.getSize().getWidth();
         int x = rangeInput.getLocation().getX();
         int y = rangeInput.getLocation().getY();

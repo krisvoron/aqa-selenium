@@ -1,4 +1,5 @@
-import org.junit.jupiter.api.AfterEach;
+package tests;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -6,44 +7,32 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import java.util.stream.Stream;
 
-import static data.Constants.BASE_PAGE;
+import static constants.Constants.BASE_PAGE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ChapterTest {
-    WebDriver webDriver;
+public class ChapterTest extends BaseTest{
     private static final String chaptersXPath = "//div[@class='card-body']";
     private static final String titleXPath = "//h1[contains(@class, 'display-6')]";
 
     @BeforeEach
     void setup(){
-        webDriver = new ChromeDriver();
-        webDriver.get(BASE_PAGE);
-        webDriver.manage().window().maximize();
+        driver.get(BASE_PAGE);
     }
-
-    @AfterEach
-    void end(){
-       webDriver.quit();
-    }
-
-
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("testData")
     @DisplayName("Проверка ссылок на https://bonigarcia.dev/:")
     void chapterTest(String expectedLinkName, String hrefValue, String expectedPageTitle, String chapterName){
-        WebElement link = webDriver.findElement(By.xpath(getXPath(chapterName, hrefValue)));
+        WebElement link = driver.findElement(By.xpath(getXPath(chapterName, hrefValue)));
         String actualLinkName = link.getText();
         link.click();
-        String actualUrl = webDriver.getCurrentUrl();
-        String actualPageTitle = webDriver.findElements(By.name("frame-header")).isEmpty() ?
-                webDriver.findElement(By.xpath(titleXPath)).getText() :
-                webDriver.switchTo().frame("frame-header").findElement(By.xpath(titleXPath)).getText();
+        String actualUrl = driver.getCurrentUrl();
+        String actualPageTitle = driver.findElements(By.name("frame-header")).isEmpty() ?
+                driver.findElement(By.xpath(titleXPath)).getText() :
+                driver.switchTo().frame("frame-header").findElement(By.xpath(titleXPath)).getText();
         Assertions.assertAll(
                 () -> assertEquals(expectedLinkName, actualLinkName, "Link name does not match the expected value"),
                 () -> assertEquals(BASE_PAGE + hrefValue, actualUrl, "The URL does not match the expected value"),

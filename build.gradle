@@ -14,6 +14,7 @@ ext {
     junitVersion = '5.11.4'
     allureVersion = '2.29.1'
     seleniumVersion = '4.29.0'
+    jacksonVersion = '2.18.3'
 }
 
 dependencies {
@@ -21,6 +22,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation "io.qameta.allure:allure-junit5:${allureVersion}"
     implementation "org.seleniumhq.selenium:selenium-java:${seleniumVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
 }
 
 
@@ -28,7 +30,10 @@ test {
     useJUnitPlatform{
         systemProperty 'allure.results.directory', 'build/allure-results'
     }
-    maxParallelForks = Runtime.runtime.availableProcessors()
+    maxParallelForks = 3
+
     systemProperty "junit.jupiter.execution.parallel.enabled", "true"
     systemProperty "junit.jupiter.execution.parallel.mode.default", "concurrent"
+    systemProperty "junit.jupiter.execution.parallel.config.strategy", "fixed"
+    systemProperty "junit.jupiter.execution.parallel.config.fixed.parallelism", "3"
 }
