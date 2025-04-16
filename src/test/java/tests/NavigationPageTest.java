@@ -1,27 +1,25 @@
-import org.junit.jupiter.api.AfterEach;
+package tests;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static data.Constants.BASE_PAGE;
-import static data.Constants.HOME_PAGE;
+import static constants.Constants.BASE_PAGE;
+import static constants.Constants.HOME_PAGE;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class NavigationPageTest {
-    WebDriver webDriver;
+public class NavigationPageTest extends BaseTest{
     private static final String HREF = "href";
     private static final String CLASS = "class";
     private static final String NAVIGATION_PAGE = BASE_PAGE + "navigation1.html";
@@ -34,28 +32,21 @@ public class NavigationPageTest {
 
     @BeforeEach
     void setup() {
-        webDriver = new ChromeDriver();
-        webDriver.get(NAVIGATION_PAGE);
-        webDriver.manage().window().maximize();
-    }
-
-    @AfterEach
-    void end() {
-        webDriver.quit();
+        driver.get(NAVIGATION_PAGE);
     }
 
     @ParameterizedTest(name = "Page {0}")
     @MethodSource("checkPageContent")
     void pageContentTest(String page, String content) {
         String pageXPath = "//nav//a[@href='navigation" + page + ".html']";
-        WebElement currentPage = webDriver.findElement(By.xpath(pageXPath));
+        WebElement currentPage = driver.findElement(By.xpath(pageXPath));
         currentPage.click();
-        WebElement pageTitle = webDriver.findElement(By.xpath("//h1[@class='display-6']"));
-        WebElement pageText = webDriver.findElement(By.xpath("//p[@class='lead']"));
-        WebElement backToIndex = webDriver.findElement(By.xpath("//a[@href='index.html']"));
+        WebElement pageTitle = driver.findElement(By.xpath("//h1[@class='display-6']"));
+        WebElement pageText = driver.findElement(By.xpath("//p[@class='lead']"));
+        WebElement backToIndex = driver.findElement(By.xpath("//a[@href='index.html']"));
         assertAll(
                 () -> assertEquals("page-item active",
-                        webDriver.findElement(By.xpath(pageXPath + "/..")).getDomAttribute(CLASS),
+                        driver.findElement(By.xpath(pageXPath + "/..")).getDomAttribute(CLASS),
                         ELEMENT_IS_NOT_ACTIVE_ERROR_MESSAGE),
                 () -> assertEquals("Navigation example", pageTitle.getText(), TITLE_ERROR_MESSAGE),
                 () -> assertEquals(content, pageText.getText(), CONTENT_ERROR_MESSAGE),
@@ -65,30 +56,30 @@ public class NavigationPageTest {
 
     @Test
     void checkDisabledPreviousButtonTest() {
-        List<WebElement> pages = webDriver.findElements(
+        List<WebElement> pages = driver.findElements(
                 By.xpath("//a[@class='page-link' and text()!='Next' and text()!='Previous']"));
         WebElement firstPage = getElementWithMinPage(pages);
         if(firstPage != null) firstPage.click();
         String previousXPath = "//a[text()='Previous']";
-        WebElement previous = webDriver.findElement(By.xpath(previousXPath));
+        WebElement previous = driver.findElement(By.xpath(previousXPath));
         assertAll(
                 () -> assertEquals("#", previous.getDomAttribute(HREF), UNEXPECTED_HREF_ERROR_MESSAGE),
-                () -> assertTrue(webDriver.findElement(By.xpath(previousXPath + "/.."))
+                () -> assertTrue(driver.findElement(By.xpath(previousXPath + "/.."))
                                 .getDomAttribute(CLASS).contains("disabled"), ELEMENT_IS_ACTIVE_ERROR_MESSAGE)
         );
     }
 
     @Test
     void checkDisabledNextButtonTest() {
-        List<WebElement> pages = webDriver.findElements(
+        List<WebElement> pages = driver.findElements(
                 By.xpath("//a[@class='page-link' and text()!='Next' and text()!='Previous']"));
         WebElement lastPage = getElementWithMaxPage(pages);
         if(lastPage != null) lastPage.click();
         String nextXPath = "//a[text()='Next']";
-        WebElement next = webDriver.findElement(By.xpath(nextXPath));
+        WebElement next = driver.findElement(By.xpath(nextXPath));
         assertAll(
                 () -> assertEquals("#", next.getDomAttribute(HREF), UNEXPECTED_HREF_ERROR_MESSAGE),
-                () -> assertTrue(webDriver.findElement(By.xpath(nextXPath + "/.."))
+                () -> assertTrue(driver.findElement(By.xpath(nextXPath + "/.."))
                         .getDomAttribute(CLASS).contains("disabled"), ELEMENT_IS_ACTIVE_ERROR_MESSAGE)
         );
     }
@@ -96,14 +87,14 @@ public class NavigationPageTest {
     @Test
     void checkActivePreviousButtonTest() {
         String pageXPath = "//nav//a[@href='navigation2.html']";
-        WebElement page = webDriver.findElement(By.xpath(pageXPath));
+        WebElement page = driver.findElement(By.xpath(pageXPath));
         page.click();
         String previousXPath = "//a[text()='Previous']";
-        WebElement previous = webDriver.findElement(By.xpath(previousXPath));
+        WebElement previous = driver.findElement(By.xpath(previousXPath));
         assertAll(
                 () -> assertEquals("navigation1.html", previous.getDomAttribute(HREF),
                         UNEXPECTED_HREF_ERROR_MESSAGE),
-                () -> assertFalse(webDriver.findElement(By.xpath(previousXPath + "/.."))
+                () -> assertFalse(driver.findElement(By.xpath(previousXPath + "/.."))
                         .getDomAttribute(CLASS).contains("disabled"), ELEMENT_IS_ACTIVE_ERROR_MESSAGE)
         );
     }
@@ -111,23 +102,23 @@ public class NavigationPageTest {
     @Test
     void checkActiveNextButtonTest() {
         String pageXPath = "//nav//a[@href='navigation2.html']";
-        WebElement page = webDriver.findElement(By.xpath(pageXPath));
+        WebElement page = driver.findElement(By.xpath(pageXPath));
         page.click();
         String nextXPath = "//a[text()='Next']";
-        WebElement next = webDriver.findElement(By.xpath(nextXPath));
+        WebElement next = driver.findElement(By.xpath(nextXPath));
         assertAll(
                 () -> assertEquals("navigation3.html", next.getDomAttribute(HREF),
                         UNEXPECTED_HREF_ERROR_MESSAGE),
-                () -> assertFalse(webDriver.findElement(By.xpath(nextXPath + "/.."))
+                () -> assertFalse(driver.findElement(By.xpath(nextXPath + "/.."))
                         .getDomAttribute(CLASS).contains("disabled"), ELEMENT_IS_ACTIVE_ERROR_MESSAGE)
         );
     }
 
     @Test
     void checkBackToIndexLink() {
-        WebElement backToIndex = webDriver.findElement(By.xpath("//a[@href='index.html']"));
+        WebElement backToIndex = driver.findElement(By.xpath("//a[@href='index.html']"));
         backToIndex.click();
-        assertEquals(HOME_PAGE, webDriver.getCurrentUrl());
+        assertEquals(HOME_PAGE, driver.getCurrentUrl());
     }
 
     private static Stream<Arguments> checkPageContent() {

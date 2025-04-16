@@ -1,18 +1,18 @@
-import org.junit.jupiter.api.AfterEach;
+package tests;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Point;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 
-import static data.Constants.BASE_PAGE;
-import static org.junit.jupiter.api.Assertions.*;
+import static constants.Constants.BASE_PAGE;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class DragAndDropPageTest {
-    WebDriver webDriver;
+public class DragAndDropPageTest extends BaseTest{
     Actions actions;
     private static final String DRAG_AND_DROP_PAGE = BASE_PAGE + "drag-and-drop.html";
     private static final String THE_SAME_LOCATION_ERROR_MESSAGE = "Locations of elements are the same";
@@ -20,21 +20,14 @@ public class DragAndDropPageTest {
 
     @BeforeEach
     void setup() {
-        webDriver = new ChromeDriver();
-        webDriver.get(DRAG_AND_DROP_PAGE);
-        webDriver.manage().window().maximize();
-        actions = new Actions(webDriver);
-    }
-
-    @AfterEach
-    void end() {
-        webDriver.quit();
+        driver.get(DRAG_AND_DROP_PAGE);
+        actions = new Actions(driver);
     }
 
     @Test
     void dragAndDropTest() {
-        WebElement source = webDriver.findElement(By.id("draggable"));
-        WebElement target = webDriver.findElement(By.id("target"));
+        WebElement source = driver.findElement(By.id("draggable"));
+        WebElement target = driver.findElement(By.id("target"));
         Point defaultSourceLocation = source.getLocation();
         Point targetLocation = target.getLocation();
         actions.dragAndDrop(source, target).perform();

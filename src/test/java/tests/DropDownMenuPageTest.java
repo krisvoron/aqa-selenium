@@ -1,22 +1,20 @@
-import org.junit.jupiter.api.AfterEach;
+package tests;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.Color;
 
 import java.util.List;
 
-import static data.Constants.BASE_PAGE;
+import static constants.Constants.BASE_PAGE;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static utils.TestUtils.toHex;
 
-public class DropDownMenuPageTest {
-    WebDriver webDriver;
+public class DropDownMenuPageTest extends BaseTest{
     Actions actions;
     private static final String DROP_DOWN_MENU_PAGE = BASE_PAGE + "dropdown-menu.html";
     private static final String MENU_LOCATOR = "./following-sibling::ul/li/a";
@@ -29,20 +27,13 @@ public class DropDownMenuPageTest {
 
     @BeforeEach
     void setup() {
-        webDriver = new ChromeDriver();
-        webDriver.get(DROP_DOWN_MENU_PAGE);
-        webDriver.manage().window().maximize();
-        actions = new Actions(webDriver);
-    }
-
-    @AfterEach
-    void end() {
-        webDriver.quit();
+        driver.get(DROP_DOWN_MENU_PAGE);
+        actions = new Actions(driver);
     }
 
     @Test
     void leftClickTest() {
-        WebElement leftClickDropDownButton = webDriver.findElement(By.id("my-dropdown-1"));
+        WebElement leftClickDropDownButton = driver.findElement(By.id("my-dropdown-1"));
         String defaultBackgroundColor = toHex(leftClickDropDownButton.getCssValue(BACKGROUND_COLOR));
         List<WebElement> actualMenu = leftClickDropDownButton.findElements(By.xpath(MENU_LOCATOR));
         actions.moveToElement(leftClickDropDownButton).sendKeys(Keys.LEFT).perform();
@@ -58,7 +49,7 @@ public class DropDownMenuPageTest {
 
     @Test
     void rightClickTest() {
-        WebElement leftClickDropDownButton = webDriver.findElement(By.id("my-dropdown-2"));
+        WebElement leftClickDropDownButton = driver.findElement(By.id("my-dropdown-2"));
         String defaultBackgroundColor = toHex(leftClickDropDownButton.getCssValue(BACKGROUND_COLOR));
         List<WebElement> actualMenu = leftClickDropDownButton.findElements(By.xpath(MENU_LOCATOR));
         actions.moveToElement(leftClickDropDownButton).sendKeys(Keys.RIGHT).perform();
@@ -74,7 +65,7 @@ public class DropDownMenuPageTest {
 
     @Test
     void doubleClickTest() {
-        WebElement leftClickDropDownButton = webDriver.findElement(By.id("my-dropdown-3"));
+        WebElement leftClickDropDownButton = driver.findElement(By.id("my-dropdown-3"));
         String defaultBackgroundColor = toHex(leftClickDropDownButton.getCssValue(BACKGROUND_COLOR));
         List<WebElement> actualMenu = leftClickDropDownButton.findElements(By.xpath(MENU_LOCATOR));
         actions.moveToElement(leftClickDropDownButton).doubleClick().perform();
@@ -86,10 +77,6 @@ public class DropDownMenuPageTest {
                         UNEXPECTED_VALUE_ERROR_MESSAGE),
                 () -> checkMenu(actualMenu)
         );
-    }
-
-    private String toHex(String color) {
-        return Color.fromString(color).asHex();
     }
 
     private void checkMenu(List<WebElement> actualMenu) {

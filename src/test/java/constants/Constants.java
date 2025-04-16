@@ -1,4 +1,4 @@
-package data;
+package constants;
 
 public class Constants {
     public static final String BONI_GARCIA_PAGE = "https://bonigarcia.dev/";
